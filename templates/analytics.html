@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Analytics - Fridge Guardian</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        padding: 20px;
+    }
+
+    /* Navbar */
+    .navbar {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 15px 20px;
+        border-radius: 12px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar a {
+        color: white;
+        margin-left: 15px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .navbar a:hover {
+        text-decoration: underline;
+    }
+
+    /* Cards */
+    .card {
+        background: white;
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2, h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    /* Stats grid */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+
+    .stat-box {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    /* Images */
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .image-container img {
+        width: 450px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Chart */
+    canvas {
+        max-width: 400px;
+        margin: auto;
+        display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .image-container img {
+            width: 100%;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h2>📊 Food Analytics</h2>
+
+    <div>
+        <a href="{{ url_for('fridge.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('fridge.history') }}">History</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="card">
+    <h3>📈 Statistics Overview</h3>
+
+    <div class="stats">
+        <div class="stat-box">Total Items<br>{{ total }}</div>
+        <div class="stat-box">Consumed<br>{{ consumed }}</div>
+        <div class="stat-box">Wasted<br>{{ wasted }}</div>
+        <div class="stat-box">Waste %<br>{{ waste_percent }}%</div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="card">
+    <h3>🥧 Food Usage Chart</h3>
+    <canvas id="foodChart"></canvas>
+</div>
+
+<!-- ML Results -->
+<!-- <div class="card">
+    <h3>🤖 Model Comparison</h3>
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='model_comparison.png') }}">
+    </div>
+</div>
+
+<div class="card">
+    <h3>📊 Confusion Matrix</h3>
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='confusion_matrix.png') }}">
+    </div>
+</div> -->
+
+<script>
+const consumed = {{ consumed | tojson }};
+const wasted = {{ wasted | tojson }};
+
+const ctx = document.getElementById('foodChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Consumed', 'Wasted'],
+        datasets: [{
+            data: [consumed, wasted],
+            backgroundColor: ['#00b894', '#d63031']
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+</script> 
+
+</body>
+</html>

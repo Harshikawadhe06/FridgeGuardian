@@ -1,0 +1,11 @@
+category,storage_type,days_to_expiry,status
+fruit,items,-27,1
+fruit,items,2,0
+fruit,items,8,0
+fruit,items,8,0
+non veg,items,3,1
+non veg,items,3,0
+fruit,items,-5,1
+fruit,items,-5,1
+non veg,items,7,0
+non veg,kg,-2,0

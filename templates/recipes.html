@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Recipe Recommendations</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#f5f7fa,#e4ecfb);
+    min-height:100vh;
+    padding:30px;
+}
+
+/* NAVBAR */
+
+.navbar{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+    padding:18px 30px;
+    border-radius:18px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.navbar h2{
+    font-size:24px;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    font-weight:500;
+}
+
+.nav-links a:hover{
+    opacity:0.8;
+}
+
+/* HEADER CARD */
+
+.reason-card{
+    margin-top:25px;
+
+    background:white;
+    padding:20px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+    border-left:6px solid #ff9800;
+}
+
+.reason-card h3{
+    color:#ff9800;
+    margin-bottom:8px;
+}
+
+/* RECIPE GRID */
+
+.recipe-grid{
+    margin-top:30px;
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:25px;
+}
+
+/* RECIPE CARD */
+
+.recipe-card{
+
+    background:white;
+    border-radius:20px;
+
+    padding:22px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+    transition:0.3s;
+}
+
+.recipe-card:hover{
+    transform:translateY(-6px);
+}
+
+.recipe-title{
+    font-size:22px;
+    font-weight:700;
+    color:#333;
+    margin-bottom:15px;
+}
+
+/* INGREDIENTS */
+
+.ingredients-box{
+
+    background:#f8f9ff;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    margin-bottom:15px;
+}
+
+.ingredients-box h4{
+    color:#667eea;
+    margin-bottom:8px;
+}
+
+/* INSTRUCTIONS */
+
+.instructions-box{
+
+    background:#fff8f0;
+
+    padding:12px;
+
+    border-radius:12px;
+}
+
+.instructions-box h4{
+    color:#ff9800;
+    margin-bottom:8px;
+}
+
+.no-data{
+
+    margin-top:30px;
+
+    background:white;
+    padding:30px;
+
+    text-align:center;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+    font-size:18px;
+    color:#777;
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <h2>🍽 Smart Recipe Recommendations</h2>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('fridge.dashboard') }}">Dashboard</a>
+
+        <a href="{{ url_for('fridge.analytics') }}">Analytics</a>
+
+        <a href="{{ url_for('fridge.history') }}">History</a>
+
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+
+    </div>
+
+</div>
+
+<!-- REASON CARD -->
+
+<div class="reason-card">
+
+    <h3>🔥 Selected Expiring Ingredients</h3>
+
+    <p>{{ reason }}</p>
+
+</div>
+
+<!-- RECIPES -->
+
+{% if recipes %}
+
+<div class="recipe-grid">
+
+    {% for recipe in recipes %}
+
+    <div class="recipe-card">
+
+        <div class="recipe-title">
+            {{ recipe.recipe_name }}
+        </div>
+
+        <div class="ingredients-box">
+
+            <h4>🥗 Ingredients</h4>
+
+            <p>
+                {{ recipe.ingredients }}
+            </p>
+
+        </div>
+
+        <div class="instructions-box">
+
+            <h4>👨‍🍳 Instructions</h4>
+
+            <p>
+                {{ recipe.instructions }}
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="no-data">
+
+    😔 No matching recipes found for current fridge items.
+
+</div>
+
+{% endif %}
+
+</body>
+</html>

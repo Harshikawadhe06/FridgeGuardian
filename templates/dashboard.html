@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fridge Guardian Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            padding: 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Recommendation Box */
+        .recommendation {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f1f7ff;
+        }
+
+        /* Days Left */
+        .expired { color: red; font-weight: bold; }
+        .warning { color: orange; font-weight: bold; }
+        .safe { color: green; }
+
+        /* Final Risk Colors */
+        .high { color: red; font-weight: bold; }
+        .medium { color: orange; font-weight: bold; }
+        .low { color: green; }
+
+        /* Actions */
+        .actions a {
+            margin: 0 5px;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            color: white;
+        }
+
+        .edit { background: #6c5ce7; }
+        .delete { background: #d63031; }
+        .consume { background: #00b894; }
+        .waste { background: #e17055; }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h2>👋 Welcome, {{ username }}</h2>
+
+    <div class="nav-links">
+        <a href="{{ url_for('fridge.dashboard') }}">Refresh</a>
+        <a href="{{ url_for('fridge.history') }}">History</a>
+        <a href="{{ url_for('fridge.analytics') }}">Analytics</a>
+        <a href="{{ url_for('fridge.recipes') }}">Recipes</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+</div>
+
+<!-- Recommendation -->
+<div class="recommendation">
+    {{ recommendation_msg }}
+</div>
+
+<!-- Add Item -->
+<div class="card">
+    <h3>➕ Add Item</h3>
+
+    <form method="POST" action="{{ url_for('fridge.add_item') }}" class="form-grid">
+        <input type="text" name="item_name" placeholder="Item Name" required>
+        <input type="text" name="quantity" placeholder="Quantity" required>
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="text" name="storage_type" placeholder="Storage Type" required>
+        <input type="date" name="expiry_date" required>
+
+        <button type="submit">Add Item</button>
+    </form>
+</div>
+
+<!-- Inventory -->
+<div class="card">
+    <h3>📦 Your Inventory</h3>
+
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Category</th>
+            <th>Storage</th>
+            <th>Expiry</th>
+            <th>Days Left</th>
+            <th>Final Risk</th>
+            <th>Action</th>
+        </tr>
+
+        {% for item in items %}
+        <tr>
+
+            <td>{{ item.item_name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.storage_type }}</td>
+            <td>{{ item.expiry_date }}</td>
+
+            <!-- Days Left -->
+            <td>
+                {% if item.days_left < 0 %}
+                    <span class="expired">Expired</span>
+                {% elif item.days_left <= 3 %}
+                    <span class="warning">{{ item.days_left }}</span>
+                {% else %}
+                    <span class="safe">{{ item.days_left }}</span>
+                {% endif %}
+            </td>
+
+            <!-- FINAL HYBRID RISK -->
+            <td>
+                {% if item.final_risk == "High" %}
+                    <span class="high">🚨 High</span>
+                {% elif item.final_risk == "Medium" %}
+                    <span class="medium">⚠ Medium</span>
+                {% else %}
+                    <span class="low">Low</span>
+                {% endif %}
+            </td>
+
+            <!-- Actions -->
+            <td class="actions">
+                <a href="{{ url_for('fridge.edit_item', item_id=item.id) }}" class="edit">Edit</a>
+                <a href="{{ url_for('fridge.delete_item', item_id=item.id) }}" class="delete">Delete</a>
+                <a href="{{ url_for('fridge.mark_consumed', item_id=item.id) }}" class="consume">Consumed</a>
+                <a href="{{ url_for('fridge.mark_wasted', item_id=item.id) }}" class="waste">Wasted</a>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+</body>
+</html>

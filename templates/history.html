@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History - Fridge Guardian</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            padding: 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            font-weight: 500;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #ff9a9e;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #fff1f1;
+        }
+
+        /* Status styling */
+        .consumed {
+            color: #00b894;
+            font-weight: bold;
+        }
+
+        .wasted {
+            color: #d63031;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            table {
+                font-size: 12px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h2>📜 Item History</h2>
+    <a href="{{ url_for('fridge.dashboard') }}">⬅ Back to Dashboard</a>
+</div>
+
+<!-- History Table -->
+<div class="card">
+    <h3>📦 Past Items</h3>
+
+    <table>
+
+        <tr>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Expiry Date</th>
+        </tr>
+
+        {% for item in items %}
+        <tr>
+            <td>{{ item.item_name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.category }}</td>
+
+            <td>
+                {% if item.status == 'Consumed' %}
+                    <span class="consumed">{{ item.status }}</span>
+                {% elif item.status == 'Wasted' %}
+                    <span class="wasted">{{ item.status }}</span>
+                {% else %}
+                    {{ item.status }}
+                {% endif %}
+            </td>
+
+            <td>{{ item.expiry_date }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+</body>
+</html>

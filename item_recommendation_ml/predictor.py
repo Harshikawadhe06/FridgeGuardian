@@ -2,7 +2,14 @@ import joblib
 import pandas as pd
 
 # Load model
-model = joblib.load("ml/waste_model.pkl")
+import os
+import joblib
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MODEL_PATH = os.path.join(BASE_DIR, "ml", "waste_model.pkl")
+
+model = joblib.load(MODEL_PATH)
 
 # Load encoders
 category_encoder = joblib.load("ml/category_encoder.pkl")

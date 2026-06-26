@@ -6,7 +6,14 @@ conn = sqlite3.connect("database.db")
 
 # read items table
 query = """
-SELECT item_name, category, storage_type, expiry_date, status
+SELECT
+    item_name,
+    quantity,
+    category,
+    storage_type,
+    expiry_date,
+    completed_date,
+    status
 FROM items
 WHERE status IN ('consumed','wasted')
 """
@@ -22,7 +29,15 @@ today = pd.Timestamp.today()
 df["days_to_expiry"] = (df["expiry_date"] - today).dt.days
 
 # keep required columns
-df = df[["category","storage_type","days_to_expiry","status"]]
+df = df[
+    [
+        "quantity",
+        "category",
+        "storage_type",
+        "days_to_expiry",
+        "status"
+    ]
+]
 
 # convert target variable
 df["status"] = df["status"].map({

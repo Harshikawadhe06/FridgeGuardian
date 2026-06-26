@@ -50,6 +50,15 @@
             font-weight: bold;
             color: #856404;
         }
+        .notification-banner {
+        background: #ffeaa7;
+        color: #2d3436;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+        font-weight: 600;
+        border-left: 6px solid #fdcb6e;
+    }
 
         /* Card */
         .card {
@@ -72,12 +81,13 @@
             gap: 10px;
         }
 
-        input {
+        input,
+        select {
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
+            width: 100%;
         }
-
         button {
             grid-column: span 2;
             padding: 10px;
@@ -129,11 +139,89 @@
             border-radius: 6px;
             color: white;
         }
+        /* Expiry Popup */
 
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    width: 400px;
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+}
+.summary-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.summary-card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.summary-card h3{
+    margin-bottom:10px;
+    color:#555;
+}
+
+.summary-card p{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.yes-btn,
+.no-btn {
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.yes-btn {
+    background: #00b894;
+}
+.filters{
+    display:flex;
+    gap:15px;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+
+.filters input,
+.filters select{
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+.no-btn {
+    background: #d63031;
+}
         .edit { background: #6c5ce7; }
-        .delete { background: #d63031; }
         .consume { background: #00b894; }
-        .waste { background: #e17055; }
     </style>
 </head>
 
@@ -151,33 +239,95 @@
         <a href="{{ url_for('auth.logout') }}">Logout</a>
     </div>
 </div>
+<div class="summary-cards">
+
+    <div class="summary-card">
+        <h3>📦 Total Items</h3>
+        <p>{{ total_items }}</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>⚠ Low Risk</h3>
+        <p>{{ low_risk_count }}</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>⏳ Expiring Soon</h3>
+        <p>{{ medium_risk_count }}</p>
+    </div>
+
+</div>
+{% if notification_msg %}
+<div class="notification-banner">
+    {{ notification_msg }}
+</div>
+{% endif %}
 
 <!-- Recommendation -->
+{% if recommendation_msg and recommendation_msg != "No urgent items. You're doing great!" %}
 <div class="recommendation">
     {{ recommendation_msg }}
 </div>
-
+{% endif %}
 <!-- Add Item -->
 <div class="card">
     <h3>➕ Add Item</h3>
 
     <form method="POST" action="{{ url_for('fridge.add_item') }}" class="form-grid">
         <input type="text" name="item_name" placeholder="Item Name" required>
-        <input type="text" name="quantity" placeholder="Quantity" required>
-        <input type="text" name="category" placeholder="Category" required>
-        <input type="text" name="storage_type" placeholder="Storage Type" required>
-        <input type="date" name="expiry_date" required>
+
+<select name="category" required>
+    <option value="">Select Category</option>
+    <option value="Vegetable">Vegetable</option>
+    <option value="Fruit">Fruit</option>
+    <option value="Nuts">Nuts</option>
+    <option value="Dairy Product">Dairy Product</option>
+    <option value="Non Veg">Non Veg</option>
+    <option value="Other">Other</option>
+</select>
+
+<input type="number" name="quantity" placeholder="Enter Quantity" min="1" required>
+
+<select name="storage_type" required>
+    <option value="">Select Unit</option>
+    <option value="Kg">Kg</option>
+    <option value="Gram">Grams</option>
+    <option value="Bundle">Bundle</option>
+    <option value="Pieces">Pieces</option>
+    <option value="Dozen">Dozen</option>
+    <option value="Liter">Liter</option>
+    <option value="Other">Other</option>
+</select>
+
+<input type="date" name="expiry_date" required>
+        
 
         <button type="submit">Add Item</button>
     </form>
 </div>
+<div class="filters">
 
+    <input
+        type="text"
+        id="inventorySearch"
+        placeholder="🔍 Search Item..."
+    >
+
+    <select id="riskFilter">
+        <option value="all">All Risks</option>
+        <option value="Low">Low Risk</option>
+        <option value="Medium">Medium Risk</option>
+    </select>
+
+</div>
 <!-- Inventory -->
 <div class="card">
     <h3>📦 Your Inventory</h3>
 
     <table>
-        <tr>
+        <tr
+    
+>
             <th>Item</th>
             <th>Qty</th>
             <th>Category</th>
@@ -189,7 +339,8 @@
         </tr>
 
         {% for item in items %}
-        <tr>
+        <tr  data-name="{{ item.item_name }}"
+        data-risk="{{ item.final_risk }}">
 
             <td>{{ item.item_name }}</td>
             <td>{{ item.quantity }}</td>
@@ -222,15 +373,114 @@
             <!-- Actions -->
             <td class="actions">
                 <a href="{{ url_for('fridge.edit_item', item_id=item.id) }}" class="edit">Edit</a>
-                <a href="{{ url_for('fridge.delete_item', item_id=item.id) }}" class="delete">Delete</a>
                 <a href="{{ url_for('fridge.mark_consumed', item_id=item.id) }}" class="consume">Consumed</a>
-                <a href="{{ url_for('fridge.mark_wasted', item_id=item.id) }}" class="waste">Wasted</a>
             </td>
 
         </tr>
         {% endfor %}
     </table>
 </div>
+{% if expired_items %}
 
+<div class="modal">
+
+    <div class="modal-content">
+
+        <h3>
+            ⚠ {{ expired_items[0].item_name }} has expired.
+        </h3>
+
+        <p>
+            Did you consume this item?
+        </p>
+
+        <br>
+
+        <a
+            href="{{ url_for('fridge.confirm_consumed',
+            item_id=expired_items[0].id) }}"
+            class="yes-btn">
+
+            Yes, Consumed
+        </a>
+
+        <a
+            href="{{ url_for('fridge.confirm_wasted',
+            item_id=expired_items[0].id) }}"
+            class="no-btn">
+
+            No, Wasted
+        </a>
+
+    </div>
+
+</div>
+
+{% endif %}
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const searchInput =
+    document.getElementById("inventorySearch");
+
+    const riskFilter =
+    document.getElementById("riskFilter");
+
+    function filterInventory(){
+
+        const searchText =
+        searchInput.value.toLowerCase();
+
+        const riskValue =
+        riskFilter.value;
+
+        const rows =
+        document.querySelectorAll(
+            "table tr[data-name]"
+        );
+
+        rows.forEach(row => {
+
+            const name =
+            row.dataset.name.toLowerCase();
+
+            const risk =
+            row.dataset.risk;
+
+            let show = true;
+
+            if(
+                !name.includes(searchText)
+            ){
+                show = false;
+            }
+
+            if(
+                riskValue !== "all" &&
+                risk !== riskValue
+            ){
+                show = false;
+            }
+
+            row.style.display =
+            show ? "" : "none";
+
+        });
+    }
+
+    searchInput.addEventListener(
+        "keyup",
+        filterInventory
+    );
+
+    riskFilter.addEventListener(
+        "change",
+        filterInventory
+    );
+
+});
+
+</script>
 </body>
 </html>

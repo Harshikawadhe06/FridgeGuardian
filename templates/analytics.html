@@ -4,175 +4,963 @@
 <meta charset="UTF-8">
 <title>Analytics - Fridge Guardian</title>
 
-<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    padding:20px;
+}
+
+/* =========================
+        NAVBAR
+========================= */
+
+.navbar{
+
+    background:linear-gradient(135deg,#667eea,#764ba2);
+
+    padding:16px 24px;
+
+    border-radius:14px;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+
+}
+
+.navbar h2{
+
+    font-size:25px;
+
+    font-weight:600;
+
+}
+
+.navbar a{
+
+    color:white;
+
+    text-decoration:none;
+
+    margin-left:18px;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+.navbar a:hover{
+
+    opacity:.8;
+
+}
+
+/* =========================
+        CARD
+========================= */
+
+.card{
+
+    background:white;
+
+    margin-top:22px;
+
+    padding:22px;
+
+    border-radius:15px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+h2,h3{
+
+    color:#2d3436;
+
+    margin-bottom:15px;
+
+}
+
+/* =========================
+        SUMMARY CARDS
+========================= */
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+
+    gap:20px;
+
+}
+
+.stat-box{
+
+    background:linear-gradient(135deg,#4facfe,#00c6fb);
+
+    color:white;
+
+    padding:22px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+.stat-box:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.stat-box h3{
+
+    color:white;
+
+    margin-bottom:10px;
+
+    font-size:18px;
+
+}
+
+.stat-box h2{
+
+    color:white;
+
+    font-size:34px;
+
+}
+
+/* =========================
+        CHART
+========================= */
+
+.chart-container{
+
+    width:100%;
+
+    max-width:480px;
+
+    margin:auto;
+
+}
+
+canvas{
+
+    width:100% !important;
+
+    max-height:360px;
+
+}
+
+/* =========================
+        LAYOUT
+========================= */
+
+.analytics-layout{
+
+    display:grid;
+
+    grid-template-columns:380px 1fr;
+
+    gap:25px;
+
+    align-items:flex-start;
+
+}
+
+.advisor-container{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+/* =========================
+        TREND FILTER
+========================= */
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+    flex-wrap:wrap;
+
+}
+
+.chart-filter{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.chart-filter select{
+
+    padding:10px 14px;
+
+    border-radius:8px;
+
+    border:1px solid #ddd;
+
+    outline:none;
+
+}
+
+.reset-btn{
+
+    padding:10px 16px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#4facfe;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.reset-btn:hover{
+
+    background:#2d8cf0;
+
+}
+
+/* =========================
+        MOBILE
+========================= */
+
+@media(max-width:900px){
+
+.analytics-layout{
+
+grid-template-columns:1fr;
+
+}
+
+.advisor-container{
+
+grid-template-columns:1fr;
+
+}
+
+.stats{
+
+grid-template-columns:1fr;
+
+}
+
+.card-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:12px;
+
+}
+
+}
+
+/* ======================================
+        SMART PURCHASE ADVISOR
+====================================== */
+
+.advisor-container{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+.advisor-box{
+
+    background:linear-gradient(135deg,#4facfe,#00c6fb);
+
+    color:white;
+
+    padding:22px;
+
+    border-radius:16px;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+
+}
+
+.advisor-box h3{
+
+    color:white;
+
+    margin-bottom:15px;
+
+}
+
+.advisor-box ul{
+
+    margin-top:10px;
+
+    padding-left:20px;
+
+}
+
+.advisor-box li{
+
+    margin-bottom:8px;
+
+}
+
+
+/* ======================================
+        INSIGHT CARDS
+====================================== */
+
+.insight-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+    margin-top:15px;
+}
+
+.insight-card{
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    color:white;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.insight-card h4{
+    margin-bottom:10px;
+    font-size:18px;
+}
+
+.insight-card p{
+    font-size:20px;
+    font-weight:600;
+}
+
+/* ======================================
+        FOOD ALERTS
+====================================== */
+
+.alerts-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+    gap:20px;
+
+}
+
+.alert-card{
+
+    background:#fff8f8;
+
+    border-left:6px solid #e74c3c;
+
+    border-radius:14px;
+
+    padding:18px;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+
+}
+
+.alert-card h4{
+
+    color:#d63031;
+
+    margin-bottom:10px;
+
+}
+
+
+/* ======================================
+        CHART DASHBOARD
+====================================== */
+
+.chart-dashboard{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:22px;
+
+    margin-top:25px;
+
+}
+
+.chart-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:22px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.chart-card h3{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+}
+
+.chart-card canvas{
+
+    width:100% !important;
+
+    height:320px !important;
+
+}
+
+
+/* ======================================
+        PLACEHOLDER
+====================================== */
+
+.chart-placeholder{
+
+    height:320px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:2px dashed #dcdcdc;
+
+    border-radius:12px;
+
+    color:#777;
+
+}
+
+
+/* ======================================
+        RESPONSIVE
+====================================== */
+
+@media(max-width:900px){
+
+    .chart-dashboard{
+
+        grid-template-columns:1fr;
+
     }
 
-    body {
-        background: #f4f7fb;
-        padding: 20px;
+    .advisor-container{
+
+        grid-template-columns:1fr;
+
     }
 
-    /* Navbar */
-    .navbar {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 15px 20px;
-        border-radius: 12px;
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+}
 
-    .navbar a {
-        color: white;
-        margin-left: 15px;
-        text-decoration: none;
-        font-size: 14px;
-    }
 
-    .navbar a:hover {
-        text-decoration: underline;
-    }
+.insight-card h4{
+    margin-bottom:10px;
+}
 
-    /* Cards */
-    .card {
-        background: white;
-        margin-top: 20px;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+.insight-card p{
+    font-size:18px;
+    font-weight:600;
+}
 
-    h2, h3 {
-        color: #333;
-        margin-bottom: 10px;
-    }
+.alert-card h4{
+    color:#d63031;
+    margin-bottom:10px;
+}
 
-    /* Stats grid */
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 15px;
-    }
-
-    .stat-box {
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        font-size: 18px;
-        font-weight: 500;
-    }
-
-    /* Images */
-    .image-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
-    }
-
-    .image-container img {
-        width: 450px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    /* Chart */
-    canvas {
-        max-width: 400px;
-        margin: auto;
-        display: block;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .image-container img {
-            width: 100%;
-        }
-    }
 </style>
-
 </head>
 
 <body>
 
-<!-- Navbar -->
+<!-- ==========================================
+                NAVBAR
+========================================== -->
+
 <div class="navbar">
-    <h2>📊 Food Analytics</h2>
+
+    <h2>📊 Food Analytics Dashboard</h2>
 
     <div>
-        <a href="{{ url_for('fridge.dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('fridge.history') }}">History</a>
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
+
+        <a href="{{ url_for('fridge.dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('fridge.history') }}">
+            History
+        </a>
+
+        <a href="{{ url_for('fridge.recipes') }}">
+            Recipes
+        </a>
+
+        <a href="{{ url_for('auth.logout') }}">
+            Logout
+        </a>
+
     </div>
+
 </div>
 
-<!-- Stats -->
+
+<!-- ==========================================
+            STATISTICS OVERVIEW
+========================================== -->
+
 <div class="card">
+
     <h3>📈 Statistics Overview</h3>
 
     <div class="stats">
-        <div class="stat-box">Total Items<br>{{ total }}</div>
-        <div class="stat-box">Consumed<br>{{ consumed }}</div>
-        <div class="stat-box">Wasted<br>{{ wasted }}</div>
-        <div class="stat-box">Waste %<br>{{ waste_percent }}%</div>
+
+        <div class="stat-box">
+
+            <h3>Total Items</h3>
+
+            <h2>{{ total }}</h2>
+
+        </div>
+
+        <div class="stat-box">
+
+            <h3>Consumed</h3>
+
+            <h2>{{ consumed }}</h2>
+
+        </div>
+
+        <div class="stat-box">
+
+            <h3>Wasted</h3>
+
+            <h2>{{ wasted }}</h2>
+
+        </div>
+
+        <div class="stat-box">
+
+            <h3>Waste %</h3>
+
+            <h2>{{ waste_percent }}%</h2>
+
+        </div>
+
+        <div class="stat-box">
+
+            <h3>🏆 Food Score</h3>
+
+            <h2>{{ food_score }}/100</h2>
+
+        </div>
+
     </div>
+
 </div>
 
-<!-- Charts -->
+
+
+<!-- ==========================================
+                CHART SECTION
+========================================== -->
+
+<div class="chart-dashboard">
+
+    <!-- Doughnut Chart -->
+
+    <div class="chart-card">
+
+        <h3>🥧 Food Usage Distribution</h3>
+
+        <canvas id="foodChart"></canvas>
+
+    </div>
+
+
+    <!-- Waste Trend -->
+
+    <div class="chart-card">
+
+        <div class="card-header">
+
+            <h3>📈 Waste Trend Analysis</h3>
+
+            <div class="chart-filter">
+
+                <select id="trendFilter">
+
+                    <option value="week">
+                        Current Week
+                    </option>
+
+                    <option value="month">
+                        Current Month
+                    </option>
+
+                    <option value="year">
+                        Current Year
+                    </option>
+
+                </select>
+
+                <button
+                    class="reset-btn"
+                    onclick="resetTrend()">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <canvas id="trendChart"></canvas>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ============================
+      Insights Section
+============================ -->
+
+<div class="card analytics-layout">
+
+    <div class="insights-section">
+        <div class="insight-grid">
+
+    <div class="insight-card">
+        <h4>🚨 Most Wasted Category</h4>
+        <p>{{ most_wasted_category }}</p>
+    </div>
+
+    <div class="insight-card">
+        <h4>❌ Most Wasted Item</h4>
+        <p>{{ most_wasted_item }}</p>
+    </div>
+
+    <div class="insight-card">
+        <h4>🍽 Most Consumed Category</h4>
+        <p>{{ most_consumed_category }}</p>
+    </div>
+
+    <div class="insight-card">
+        <h4>✅ Most Consumed Item</h4>
+        <p>{{ most_consumed_item }}</p>
+    </div>
+
+</div>
+        
+
+            
+
+        </div>
+
+    </div>
+
+</div>
+
+        <div class="card">
+
+    <h3>🤖 Smart Purchase Advisor</h3>
+
+    <div class="advisor-container">
+
+        <div class="advisor-box">
+            <h4>📈 Buy More</h4>
+
+            {% if buy_more %}
+                {% for item in buy_more %}
+                    <p>{{ item }}</p>
+                {% endfor %}
+            {% else %}
+                <p>No data</p>
+            {% endif %}
+        </div>
+
+        <div class="advisor-box">
+            <h4>⚠ Buy Less</h4>
+
+            {% if buy_less %}
+                {% for item in buy_less %}
+                    <p>{{ item }}</p>
+                {% endfor %}
+            {% else %}
+                <p>No data</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
 <div class="card">
-    <h3>🥧 Food Usage Chart</h3>
-    <canvas id="foodChart"></canvas>
-</div>
 
-<!-- ML Results -->
-<!-- <div class="card">
-    <h3>🤖 Model Comparison</h3>
-    <div class="image-container">
-        <img src="{{ url_for('static', filename='model_comparison.png') }}">
-    </div>
-</div>
+    <h3>🚨 Smart Food Alerts</h3>
 
-<div class="card">
-    <h3>📊 Confusion Matrix</h3>
-    <div class="image-container">
-        <img src="{{ url_for('static', filename='confusion_matrix.png') }}">
+    <div class="alerts-grid">
+
+        {% if high_risk_items %}
+
+            {% for item in high_risk_items %}
+
+            <div class="alert-card">
+
+                <h4>
+                    {{ item.name }}
+                    ({{ item.risk }}%)
+                </h4>
+
+                <ul>
+                    {% for reason in item.reasons %}
+                        <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>✅ No high-risk items detected.</p>
+
+        {% endif %}
+
     </div>
-</div> -->
+
+</div>
 
 <script>
-const consumed = {{ consumed | tojson }};
-const wasted = {{ wasted | tojson }};
 
-const ctx = document.getElementById('foodChart').getContext('2d');
+// =====================
+// DOUGHNUT CHART
+// =====================
 
-new Chart(ctx, {
-    type: 'pie',
+const consumed = Number("{{ consumed }}");
+const wasted = Number("{{ wasted }}");
+
+const donutCanvas = document.getElementById("foodChart");
+
+if (donutCanvas) {
+
+    new Chart(donutCanvas, {
+
+        type: "doughnut",
+
+        data: {
+            labels: ["Consumed", "Wasted"],
+
+            datasets: [{
+                data: [consumed, wasted],
+
+                backgroundColor: [
+                    "#00b894",
+                    "#d63031"
+                ]
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            cutout: "70%",
+
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+
+    });
+
+}
+
+
+// =====================
+// WASTE TREND DATA
+// =====================
+
+const weeklyLabels = {{ week_labels|tojson }};
+const weeklyData = {{ week_data|tojson }};
+
+const monthlyLabels = {{ monthly_labels|tojson }};
+const monthlyData = {{ monthly_data|tojson }};
+
+const yearlyLabels = {{ yearly_labels|tojson }};
+const yearlyData = {{ yearly_data|tojson }};
+
+
+// =====================
+// LINE CHART
+// =====================
+
+const trendCanvas = document.getElementById("trendChart");
+
+let trendChart = new Chart(trendCanvas, {
+
+    type: "line",
+
     data: {
-        labels: ['Consumed', 'Wasted'],
+
+        labels: weeklyLabels,
+
         datasets: [{
-            data: [consumed, wasted],
-            backgroundColor: ['#00b894', '#d63031']
+
+            label: "Wasted Items",
+
+            data: weeklyData,
+
+            borderColor: "#e74c3c",
+
+            backgroundColor: "rgba(231,76,60,0.12)",
+
+            fill: true,
+
+            tension: 0.35,
+
+            borderWidth: 3,
+
+            pointRadius: 5
+
         }]
     },
-    options: {
-        responsive: true
-    }
-});
-</script> 
 
-</body>
-</html>
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                display: false
+            }
+
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                ticks: {
+                    precision: 0
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+
+// =====================
+// FILTER
+// =====================
+
+document
+.getElementById("trendFilter")
+.addEventListener("change", function(){
+
+    const value = this.value;
+
+    if(value=="week"){
+
+        trendChart.data.labels = weeklyLabels;
+        trendChart.data.datasets[0].data = weeklyData;
+
+    }
+
+    else if(value=="month"){
+
+        trendChart.data.labels = monthlyLabels;
+        trendChart.data.datasets[0].data = monthlyData;
+
+    }
+
+    else{
+
+        trendChart.data.labels = yearlyLabels;
+        trendChart.data.datasets[0].data = yearlyData;
+
+    }
+
+    trendChart.update();
+
+});
+document
+.getElementById("resetTrend")
+.addEventListener("click", function(){
+
+    document.getElementById("trendFilter").value = "week";
+
+    trendChart.data.labels = weeklyLabels;
+    trendChart.data.datasets[0].data = weeklyData;
+    trendChart.update();
+
+});
+
+</script>

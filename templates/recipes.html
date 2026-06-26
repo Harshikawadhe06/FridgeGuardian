@@ -140,6 +140,60 @@ body{
     color:#ff9800;
     margin-bottom:8px;
 }
+.filter-bar{
+
+    margin-top:20px;
+
+    background:white;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+
+}
+
+.filter-bar form{
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+    align-items:center;
+
+}
+
+.filter-bar select{
+
+    padding:10px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+}
+
+.filter-btn{
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:linear-gradient(
+        135deg,
+        #667eea,
+        #764ba2
+    );
+
+    color:white;
+
+    cursor:pointer;
+}
 
 .no-data{
 
@@ -191,6 +245,99 @@ body{
     <p>{{ reason }}</p>
 
 </div>
+<div class="filter-bar">
+
+<form method="GET">
+
+    <select name="meal_type">
+
+        <option value="All">
+            All Meals
+        </option>
+
+        <option
+            value="Breakfast"
+            {% if meal_filter=="Breakfast" %}
+            selected
+            {% endif %}
+        >
+            Breakfast
+        </option>
+
+        <option
+            value="Lunch"
+            {% if meal_filter=="Lunch" %}
+            selected
+            {% endif %}
+        >
+            Lunch
+        </option>
+
+        <option
+            value="Dinner"
+            {% if meal_filter=="Dinner" %}
+            selected
+            {% endif %}
+        >
+            Dinner
+        </option>
+
+        <option
+            value="Snack"
+            {% if meal_filter=="Snack" %}
+            selected
+            {% endif %}
+        >
+            Snack
+        </option>
+
+        <option
+            value="Light Meal"
+            {% if meal_filter=="Light Meal" %}
+            selected
+            {% endif %}
+        >
+            Light Meal
+        </option>
+
+    </select>
+
+    <select name="food_type">
+
+        <option value="All">
+            All Types
+        </option>
+
+        <option
+            value="Veg"
+            {% if food_filter=="Veg" %}
+            selected
+            {% endif %}
+        >
+            Veg
+        </option>
+
+        <option
+            value="Non Veg"
+            {% if food_filter=="Non Veg" %}
+            selected
+            {% endif %}
+        >
+            Non Veg
+        </option>
+
+    </select>
+
+    <button
+        type="submit"
+        class="filter-btn"
+    >
+        Apply Filters
+    </button>
+
+</form>
+
+</div>
 
 <!-- RECIPES -->
 
@@ -201,11 +348,14 @@ body{
     {% for recipe in recipes %}
 
     <div class="recipe-card">
-
+      
         <div class="recipe-title">
             {{ recipe.recipe_name }}
         </div>
-
+          <p>
+    🎯 Match Score:
+    <b>{{ recipe.match_percent }}%</b>
+</p>
         <div class="ingredients-box">
 
             <h4>🥗 Ingredients</h4>

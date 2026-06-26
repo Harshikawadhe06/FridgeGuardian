@@ -1,16 +1,15 @@
 import sqlite3
 
-# Connect to your database
-conn = sqlite3.connect("database.db")   # Use EXACT same DB name as shown
+conn = sqlite3.connect("database.db")
 cursor = conn.cursor()
 
 try:
-    cursor.execute("ALTER TABLE items ADD COLUMN status TEXT DEFAULT 'pending'")
-    cursor.execute("ALTER TABLE items ADD COLUMN risk_score REAL")
-    cursor.execute("ALTER TABLE items ADD COLUMN risk_level TEXT")
-    
+    cursor.execute(
+        "ALTER TABLE items ADD COLUMN completed_date TEXT"
+    )
+
     conn.commit()
-    print("✅ Table updated successfully!")
+    print("✅ completed_date column added")
 
 except Exception as e:
     print("❌ Error:", e)

@@ -38,6 +38,24 @@
             color: #333;
         }
 
+        .password-container {
+        position: relative;
+        }
+
+        .password-container input {
+        padding-right: 40px;
+        }
+
+        .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+        font-size: 18px;
+        }
+
         label {
             display: block;
             text-align: left;
@@ -115,8 +133,17 @@
 
 <div class="register-container">
     <h2>📝 Register</h2>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        <p style="color:red; margin-bottom:10px;">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
+{% endwith %}
     <form method="POST" action="/register">
+        
 
         <label>Username</label>
         <input type="text" name="username" required>

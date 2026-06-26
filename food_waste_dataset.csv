@@ -1,11 +1,36 @@
-category,storage_type,days_to_expiry,status
-fruit,items,-27,1
-fruit,items,2,0
-fruit,items,8,0
-fruit,items,8,0
-non veg,items,3,1
-non veg,items,3,0
-fruit,items,-5,1
-fruit,items,-5,1
-non veg,items,7,0
-non veg,kg,-2,0
+quantity,category,storage_type,days_to_expiry,status
+2.0,fruit,items,-123,1
+3.0,fruit,items,-94,0
+2.0,fruit,items,-88,0
+2.0,fruit,items,-88,0
+2.0,non veg,items,-93,1
+2.0,non veg,items,-93,0
+10.0,fruit,items,-101,1
+10.0,fruit,items,-101,1
+14.0,non veg,items,-89,0
+1.0,non veg,kg,-98,0
+1.0,non veg,kg,-96,0
+0.5,non veg,kg,-95,1
+1.0,fruit,kg,-89,0
+2.0,fruit,items,-87,0
+1.0,vegetable,item,-88,1
+250.0,vegetable,gm,-85,0
+1.0,non veg,item,-89,1
+1.0,fruit,items,-83,0
+2.0,veg,items,-80,0
+0.5,veg,kg,-81,1
+1.0,non veg,items,-61,0
+0.5,non veg,kg,-64,1
+1.0,fruits,kg,-23,0
+2.0,fruit,kg,-23,1
+1.0,veg,liter,-6,0
+1.0,non veg,kg,-5,1
+500.0,veg,gm,-4,1
+2.0,veg,pieces,-5,1
+2.0,Fruit,Pieces,-1,0
+1.0,Dairy Product,Liter,-3,1
+2.0,Non Veg,Kg,-3,1
+2.0,Non Veg,Pieces,-3,1
+2.0,Non Veg,Pieces,-3,0
+2.0,Fruit,Dozen,-1,0
+2.0,Fruit,Pieces,5,0

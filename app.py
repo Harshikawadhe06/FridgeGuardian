@@ -6,7 +6,7 @@ from config import Config
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    app.secret_key = "supersecretkey"
     from routes.auth import auth_bp
     from routes.fridge import fridge_bp
 
@@ -28,6 +28,7 @@ def init_db():
 
 
 app = create_app()
+
 
 from flask import redirect, url_for
 

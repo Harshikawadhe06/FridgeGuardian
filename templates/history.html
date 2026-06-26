@@ -54,6 +54,21 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        .filters{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    
+}
+    
+    .filters input,
+    .filters select{
+        padding:10px;
+        border-radius:8px;
+        border:1px solid #ccc;
+    }
+
         h3 {
             margin-bottom: 15px;
             color: #333;
@@ -107,7 +122,85 @@
         }
     </style>
 </head>
+<script>
 
+const searchInput =
+document.getElementById("searchInput");
+
+const statusFilter =
+document.getElementById("statusFilter");
+
+const categoryFilter =
+document.getElementById("categoryFilter");
+
+function filterTable(){
+
+    const searchText =
+    searchInput.value.toLowerCase();
+
+    const statusValue =
+    statusFilter.value;
+
+    const categoryValue =
+    categoryFilter.value;
+
+    const rows =
+    document.querySelectorAll("table tr[data-name]");
+
+    rows.forEach(row => {
+
+        const name =
+        row.dataset.name.toLowerCase();
+
+        const status =
+        row.dataset.status;
+
+        const category =
+        row.dataset.category;
+
+        let show = true;
+
+        if(!name.includes(searchText)){
+            show = false;
+        }
+
+        if(
+            statusValue !== "all" &&
+            status !== statusValue
+        ){
+            show = false;
+        }
+
+        if(
+            categoryValue !== "all" &&
+            category !== categoryValue
+        ){
+            show = false;
+        }
+
+        row.style.display =
+        show ? "" : "none";
+
+    });
+
+}
+
+searchInput.addEventListener(
+    "keyup",
+    filterTable
+);
+
+statusFilter.addEventListener(
+    "change",
+    filterTable
+);
+
+categoryFilter.addEventListener(
+    "change",
+    filterTable
+);
+
+</script>
 <body>
 
 <!-- Navbar -->
@@ -116,6 +209,38 @@
     <a href="{{ url_for('fridge.dashboard') }}">⬅ Back to Dashboard</a>
 </div>
 
+<div class="filters">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search Item..."
+    >
+
+    <select id="statusFilter">
+        <option value="all">All Status</option>
+        <option value="consumed">Consumed</option>
+        <option value="wasted">Wasted</option>
+    </select>
+
+    <select id="categoryFilter">
+        <option value="all">All Categories</option>
+        <option value="Vegetable">Vegetable</option>
+        <option value="Fruit">Fruit</option>
+        <option value="Dairy Product">Dairy Product</option>
+        <option value="Non Veg">Non Veg</option>
+        <option value="Nuts">Nuts</option>
+        <option value="Other">Other</option>
+    </select>
+    <div style="display:flex;align-items:center;gap:10px;">
+    <span><b>From</b></span>
+    <input type="date" id="fromDate">
+
+    <span><b>To</b></span>
+    <input type="date" id="toDate">
+</div>
+
+</div>
 <!-- History Table -->
 <div class="card">
     <h3>📦 Past Items</h3>
@@ -128,30 +253,122 @@
             <th>Category</th>
             <th>Status</th>
             <th>Expiry Date</th>
+            <th>Completed Date</th>
         </tr>
 
-        {% for item in items %}
-        <tr>
-            <td>{{ item.item_name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.category }}</td>
+    {% for item in items %}
+<tr
+    data-name="{{ item.item_name }}"
+    data-status="{{ item.status|lower }}"
+    data-category="{{ item.category }}"
+    data-date="{{ item.completed_date[:10] if item.completed_date else '' }}"
+>
+    <td>{{ item.item_name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.category }}</td>
 
-            <td>
-                {% if item.status == 'Consumed' %}
-                    <span class="consumed">{{ item.status }}</span>
-                {% elif item.status == 'Wasted' %}
-                    <span class="wasted">{{ item.status }}</span>
-                {% else %}
-                    {{ item.status }}
-                {% endif %}
-            </td>
+    <td>
+        {% if item.status|lower == 'consumed' %}
+            <span class="consumed">{{ item.status }}</span>
+        {% elif item.status|lower == 'wasted' %}
+            <span class="wasted">{{ item.status }}</span>
+        {% endif %}
+    </td>
 
-            <td>{{ item.expiry_date }}</td>
-        </tr>
-        {% endfor %}
+    <td>{{ item.expiry_date }}</td>
+    <td>
+    {{ item.completed_date if item.completed_date else 'N/A' }}
+</td>
+</tr>
+{% endfor %} 
 
     </table>
 </div>
+<script>
 
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const fromDate = document.getElementById("fromDate");
+    const toDate = document.getElementById("toDate");
+
+    function filterTable() {
+
+        const searchText = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+        const categoryValue = categoryFilter.value;
+        const fromValue = fromDate.value;
+        const toValue = toDate.value;
+
+        const rows = document.querySelectorAll("table tr[data-name]");
+
+        rows.forEach(row => {
+
+            const name = row.dataset.name.toLowerCase();
+            const status = row.dataset.status;
+            const category = row.dataset.category;
+            const completedDate = row.dataset.date;
+
+            let show = true;
+
+            /* Search Filter */
+            if (!name.includes(searchText)) {
+                show = false;
+            }
+
+            /* Status Filter */
+            if (
+                statusValue !== "all" &&
+                status !== statusValue
+            ) {
+                show = false;
+            }
+
+            /* Category Filter */
+            if (
+                categoryValue !== "all" &&
+                category !== categoryValue
+            ) {
+                show = false;
+            }
+
+            /* Date Filter */
+            if (completedDate) {
+
+                const rowDate = new Date(completedDate);
+
+                if (fromValue) {
+                    const fromObj = new Date(fromValue);
+
+                    if (rowDate < fromObj) {
+                        show = false;
+                    }
+                }
+
+                if (toValue) {
+                    const toObj = new Date(toValue);
+
+                    if (rowDate > toObj) {
+                        show = false;
+                    }
+                }
+            }
+
+            row.style.display = show ? "" : "none";
+
+        });
+    }
+
+    searchInput.addEventListener("keyup", filterTable);
+    statusFilter.addEventListener("change", filterTable);
+    categoryFilter.addEventListener("change", filterTable);
+    fromDate.addEventListener("change", filterTable);
+    toDate.addEventListener("change", filterTable);
+
+});
+
+</script>
 </body>
 </html>

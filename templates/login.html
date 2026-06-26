@@ -32,6 +32,24 @@
             text-align: center;
             animation: fadeIn 0.8s ease-in-out;
         }
+        .password-container {
+        position: relative;
+        }
+
+        .password-container input {
+        padding-right: 40px;
+        }
+
+        .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+        font-size: 18px;
+        }
+
 
         .login-container h2 {
             margin-bottom: 20px;
@@ -115,7 +133,13 @@
 
 <div class="login-container">
     <h2>🔐 Login</h2>
-
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    {% for message in messages %}
+        <p style="color:red;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+{% endwith %}
     <form method="POST" action="/login">
 
         <label>Username</label>

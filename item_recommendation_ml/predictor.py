@@ -7,13 +7,13 @@ import joblib
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-MODEL_PATH = os.path.join(BASE_DIR, "ml", "waste_model.pkl")
+MODEL_PATH = os.path.join(BASE_DIR, "ML", "waste_model.pkl")
 
 model = joblib.load(MODEL_PATH)
 
 # Load encoders
-category_encoder = joblib.load("ml/category_encoder.pkl")
-storage_encoder = joblib.load("ml/storage_encoder.pkl")
+category_encoder = joblib.load("ML/category_encoder.pkl")
+storage_encoder = joblib.load("ML/storage_encoder.pkl")
 
 
 def predict_waste_risk(
